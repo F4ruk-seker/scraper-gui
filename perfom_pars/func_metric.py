@@ -11,7 +11,7 @@ def get_performance_metric(func):
         finally:
             end_time = perf_counter()
             total_time = round(end_time - start_time, 2)
-            print(f"process time : {total_time} seconds | func name : ({func.__name__})".upper())
+            print("process time : {} seconds | func name : ({})".format(total_time, func.__name__).upper())
     return wrapper
 
 

@@ -7,6 +7,11 @@ from api_service import Branch
 import re
 from models import ProgresModel
 from models import BranchModel
+from map_scraper.scraper_manager import ScraperManager
+from multiprocessing import Pool
+from threading import Thread
+from multiprocessing import Process
+
 
 API_HOST = "http://127.0.0.1:8000/api/"
 
@@ -35,12 +40,27 @@ class MainPage:
         self.gui()
         self.branch_select_list: list = []
         self.get_branch_opt_query()
+        self.scraper_had_job: bool = False
+        self.scraper_manager = ScraperManager()
+
 
     def set_branch_select_list(self, select_list: list):
         self.branch_select_list = select_list
 
     def call_scrapers(self):
-        start_scrape(self.branch_select_list)
+        if self.scraper_manager.is_had_progres():
+            ui.notify("scraper already working")
+        else:
+            temp_target_list: list[str] = [
+                "https://www.google.com/maps/place/K%C3%B6fteci+Yusuf/@40.4229058,28.8603544,11z/data=!4m12!1m2!2m1!1sk%C3%B6fteci+yusuf!3m8!1s0x14ca5b9025516c17:0x20bbd545f7e3d498!8m2!3d40.3896827!4d29.1396751!9m1!1b1!15sCg5rw7ZmdGVjaSB5dXN1ZiIDiAEBWhAiDmvDtmZ0ZWNpIHl1c3VmkgEKcmVzdGF1cmFudOABAA!16s%2Fg%2F11gy1lvvc8?entry=ttu",
+                "https://www.google.com/maps/place/K%C3%B6fteci+Yusuf/@40.6576,28.9854089,11z/data=!4m12!1m2!2m1!1sk%C3%B6fteci+yusuf!3m8!1s0x14cae5fe98c04095:0xbed7d585c8314365!8m2!3d40.6576!4d29.2738!9m1!1b1!15sCg5rw7ZmdGVjaSB5dXN1ZiIDiAEBWhAiDmvDtmZ0ZWNpIHl1c3VmkgEKcmVzdGF1cmFudOABAA!16s%2Fg%2F11q254kt79?entry=ttu",
+                "https://www.google.com/maps/place/K%C3%B6fteci+Yusuf/@40.6576,28.9854089,11z/data=!4m12!1m2!2m1!1sk%C3%B6fteci+yusuf!3m8!1s0x14cae5fe98c04095:0xbed7d585c8314365!8m2!3d40.6576!4d29.2738!9m1!1b1!15sCg5rw7ZmdGVjaSB5dXN1ZiIDiAEBWhAiDmvDtmZ0ZWNpIHl1c3VmkgEKcmVzdGF1cmFudOABAA!16s%2Fg%2F11q254kt79?entry=ttu",
+                ]
+            self.scraper_manager.set_target_list(temp_target_list)
+            # is_had_progres()
+            scp = Process(target=self.scraper_manager.start_scrape_with_pool, args=(None,))
+            scp.start()
+
 
     def create_branch(self):
         branch = BranchModel({

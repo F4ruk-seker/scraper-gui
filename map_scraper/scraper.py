@@ -7,9 +7,10 @@ from selenium.common import exceptions as BW_EXC
 from selenium.webdriver.firefox.options import Options
 import time
 
-from map_arrangement import Arrangement
-from map_arrangement import ArrangementModel as ARM
+from .map_arrangement import Arrangement
+from .map_arrangement import ArrangementModel as ARM
 from perfom_pars import get_performance_metric
+
 
 # from tqdm import tqdm
 
@@ -21,6 +22,7 @@ class TimeoutException(Exception):
 
 
 class MapScraper(object):
+
     def __init__(self, target):
         options = Options()
         options.add_argument("--headless")
@@ -33,7 +35,9 @@ class MapScraper(object):
         self.__time_out = None
         self.__progress_bar: bool = False
         self.__progress_ticker: bool = False
+        self.ticker = None
 
+    @get_performance_metric
     def auto(self):
         self.set_window_size()
         try:
@@ -48,7 +52,8 @@ class MapScraper(object):
             time.sleep(1)
             self.change_arrangement(AR.LATEST)
             time.sleep(5)
-            self.active_progress_bar()
+            # self.active_progress_bar()
+
             self.scrape_comments(max_count=500, time_out=20 * 1)
         finally:
             self.close_bw()
@@ -59,6 +64,9 @@ class MapScraper(object):
     def active_ticker(self):
         self.__progress_ticker = True
 
+    def set_ticker(self, ticker):
+        self.ticker = ticker
+
     def start_timer(self):
         self.__start_time = time.perf_counter()
 
@@ -68,6 +76,7 @@ class MapScraper(object):
     def set_window_size(self, x: int = 1280, y: int = 720):
         self.bw.set_window_size(x, y)
 
+    @get_performance_metric
     def go_target(self):
         # self.bw.set_page_load_timeout(10)
         self.bw.get(self.target)
@@ -166,7 +175,9 @@ class MapScraper(object):
                         else:
                             declared += 1
 
-        if self.__progress_bar:
+        if self.__progress_ticker:
+            wrapper(self, comment_bar, declared, self.ticker)
+        elif self.__progress_bar:
             with alive_bar(max_count, force_tty=True, title="scraper beta") as bar:
                 wrapper(self, comment_bar, declared, bar)
         else:
