@@ -7,12 +7,13 @@ class BranchModel:
     name: str
     url: str
     explanation: str
+    comments: list or None
 
     def __init__(self, json: dict):
-        if json:
-            for k, v in json.items():
-                setattr(self, k, v)
+        for k, v in json.items():
+            setattr(self, k, v)
 
+    @property
     def json(self):
         return self.__dict__
 

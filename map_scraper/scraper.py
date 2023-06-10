@@ -7,8 +7,8 @@ from selenium.common import exceptions as BW_EXC
 from selenium.webdriver.firefox.options import Options
 import time
 
-from .map_arrangement import Arrangement
-from .map_arrangement import ArrangementModel as ARM
+from map_arrangement import Arrangement
+from map_arrangement import ArrangementModel as ARM
 from perfom_pars import get_performance_metric
 
 # from tqdm import tqdm
@@ -21,9 +21,9 @@ class TimeoutException(Exception):
 
 
 class MapScraper(object):
-    def __init__(self,target):
+    def __init__(self, target):
         options = Options()
-        # options.add_argument("--headless")
+        options.add_argument("--headless")
 
         self.target = target
         self.bw = webdriver.Firefox(options=options)
@@ -32,9 +32,32 @@ class MapScraper(object):
         self.__start_time = None
         self.__time_out = None
         self.__progress_bar: bool = False
+        self.__progress_ticker: bool = False
+
+    def auto(self):
+        self.set_window_size()
+        try:
+            self.go_target()
+            bad_try_count = 0
+            while not self.is_available():
+                time.sleep(1)
+                bad_try_count += 1
+                if bad_try_count > 10:
+                    print("DEBUG : bad_try_count END")
+                    break
+            time.sleep(1)
+            self.change_arrangement(AR.LATEST)
+            time.sleep(5)
+            self.active_progress_bar()
+            self.scrape_comments(max_count=500, time_out=20 * 1)
+        finally:
+            self.close_bw()
 
     def active_progress_bar(self):
         self.__progress_bar = True
+
+    def active_ticker(self):
+        self.__progress_ticker = True
 
     def start_timer(self):
         self.__start_time = time.perf_counter()
@@ -42,7 +65,7 @@ class MapScraper(object):
     def set_time_out(self, second: int):
         self.__time_out = second
 
-    def set_window_size(self, x: int = 800, y: int = 600):
+    def set_window_size(self, x: int = 1280, y: int = 720):
         self.bw.set_window_size(x, y)
 
     def go_target(self):

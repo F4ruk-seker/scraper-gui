@@ -4,12 +4,12 @@ from config import API_HOST
 
 
 def create_branch(branch: BranchModel):
-    path = API_HOST / "branch/add-branch/"
-    return api.post(path, branch.json())
+    path = API_HOST / "branch/create/"
+    return api.post(path, branch.json)
 
 
 def get_branch_opt_query(query: str = '') -> list:
-    path = API_HOST / "branch/get-branch/?search=" + query
+    path = API_HOST / "branch/?search=" + query
     data = api.get(path)
     result = []
     for branch in data.json():
@@ -21,3 +21,4 @@ def get_branch_opt_query(query: str = '') -> list:
 
 def remove_selected_branch():
     pass
+

@@ -45,7 +45,7 @@ def get_branch_opt_query(query=''):
     request = branch.get_branch_opt_query(query.value) if query else branch.get_branch_opt_query()
     branch_list.clear()
     for __branch in request:
-        branch_list.append(__branch.__dict__)
+        branch_list.append(__branch.json)
     branch_table.update()
     branch_wait.set_visibility(False)
 
@@ -104,7 +104,7 @@ with ui.column().classes('container mx-auto mt-0') as branch_option_menu:
 
 with ui.column().classes('justify-center items-center container mx-auto mt-0'):
     columns = [
-        {'name': 'name', 'label': 'Name', 'field': 'name', 'sortable': True, 'align': 'left'},
+        {'name': 'name', 'label': 'Name', 'field': 'name', 'sortable': True, 'align': 'left', 'select':True},
         {'name': 'url', 'label': 'url', 'field': 'url', 'sortable': False, 'align': 'left'},
         {'name': 'explanation', 'label': 'explanation', 'field': 'explanation', 'sortable': False, 'align': 'left'},
         {'name': 'id', 'label': 'id', 'field': 'id', 'required': False, 'align': 'left', "selectable": True},
@@ -117,7 +117,7 @@ with ui.column().classes('justify-center items-center container mx-auto mt-0'):
 
 
 
-
 app.native.window_args['resizable'] = True
 app.native.start_args['debug'] = False
-ui.run(native=True, window_size=(1280, 720), fullscreen=False, title="F4 |", favicon="🚀")
+# ui.dark_mode().enable()
+ui.run(native=True, window_size=(1280, 720), fullscreen=False, title="F4 |", favicon="🚀", reload=True)

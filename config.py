@@ -15,6 +15,6 @@ class ApiHost:
     def __add__(self, other):
         return ApiHost(host=self.__HOST + other)
 
+
 API_HOST = ApiHost("http://127.0.0.1:8000/api")
-
-
+GUI_LOCAL_HOST = ApiHost("http://localhost:8001")
