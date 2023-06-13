@@ -1,0 +1,2 @@
+git remote add origin https://github.com/F4ruk-seker/scraper-gui.git
+git push -u origin multi-scraper

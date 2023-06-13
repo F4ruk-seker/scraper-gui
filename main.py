@@ -67,10 +67,6 @@ def get_branch_from_user_input():
 if __name__ == '__main__':
     setup_logger()
     logger = get_logger("main")
-    logger.critical("test")
-    logger.debug("test")
-    logger.error("test")
-    logger.info("test")
 
     branch_list: list[BranchModel] = []
 
