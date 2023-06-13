@@ -5,6 +5,7 @@ from models import BranchModel
 from multiprocessing import Pool, Manager, Process
 from basic_db import Comment, get_session
 
+#  multi-scraper
 
 class ScraperManager:
     def __init__(self, target_list):
@@ -17,7 +18,6 @@ class ScraperManager:
         for comment in scraper.get_comment_list():
             #  .query(Comment).filter_by(comment_text=comment_list[0].comment_text).count()
             if session.query(Comment).filter_by(comment_text=comment).count() == 0:
-                print(comment)
                 session.add(
                     Comment(
                         comment_text=comment,

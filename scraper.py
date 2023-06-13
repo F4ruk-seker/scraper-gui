@@ -7,9 +7,10 @@ import time
 from alive_progress import alive_bar
 from map_arrangement import Arrangement
 from map_arrangement import ArrangementModel as ARM
-from perfom_pars import get_performance_metric
+from perfom_pars import get_performance_metric_info_log
+from logger import get_logger
 
-
+logger = get_logger('MapScraper')
 # from tqdm import tqdm
 
 AR = Arrangement()
@@ -35,7 +36,7 @@ class MapScraper(object):
         self.__progress_ticker: bool = False
         self.ticker = None
 
-    @get_performance_metric
+    @get_performance_metric_info_log
     def auto(self):
         self.set_window_size()
         try:
@@ -45,7 +46,8 @@ class MapScraper(object):
                 time.sleep(1)
                 bad_try_count += 1
                 if bad_try_count > 10:
-                    print("DEBUG : bad_try_count END")
+                    logger.debug(" bad_try_count END")
+                    # print("DEBUG : bad_try_count END")
                     break
             time.sleep(1)
             self.change_arrangement(AR.LATEST)
@@ -74,7 +76,7 @@ class MapScraper(object):
     def set_window_size(self, x: int = 1280, y: int = 720):
         self.bw.set_window_size(x, y)
 
-    @get_performance_metric
+    @get_performance_metric_info_log
     def go_target(self):
         # self.bw.set_page_load_timeout(10)
         self.bw.get(self.target)
@@ -85,7 +87,7 @@ class MapScraper(object):
         except:
             pass
 
-    @get_performance_metric
+    @get_performance_metric_info_log
     def change_arrangement(self, ar: ARM):
         change_arrangement_xpath = "/html/body/div[3]/div[9]/div[9]/div/div/div[1]/div[3]/div/div[1]/div/div/div[3]/div[9]/button"
         change_arrangement_obj = self.bw.find_element(By.XPATH, change_arrangement_xpath)
@@ -97,13 +99,15 @@ class MapScraper(object):
         arrangement_row_list = arrangement_list_obj.find_elements(By.XPATH,  '//div[@role="menuitemradio"]')
         arl_count = len(arrangement_row_list)
         if arl_count > AR.get_arrangement_count():
-            print(f"DEBUG (change_arrangement): arrangement items count not true then ARRANGEMENT_COUNT > {arl_count} ")
+            logger.debug(f"(change_arrangement): arrangement items count not true then ARRANGEMENT_COUNT > {arl_count} ")
+            # print(f"DEBUG (change_arrangement): arrangement items count not true then ARRANGEMENT_COUNT > {arl_count} ")
         try:
             row = arrangement_row_list[ar.get_row()]
             row.click()
         except:
-            print(
-                f"DEBUG (change_arrangement): arrangement items not found name: {ar.get_name()} row:{ar.get_row()} | founded_count:{arl_count}")
+            logger.error(f"(change_arrangement): arrangement items not found name: {ar.get_name()} row:{ar.get_row()} | founded_count:{arl_count}")
+            # print(
+            #     f"DEBUG (change_arrangement): arrangement items not found name: {ar.get_name()} row:{ar.get_row()} | founded_count:{arl_count}")
 
     def get_comment_bar(self):
         try:
@@ -144,7 +148,7 @@ class MapScraper(object):
                         # print(comment.text)
         # return temp_comment_list
 
-    @get_performance_metric
+    @get_performance_metric_info_log
     def scrape_comments(self, max_count: int = 100, time_out: int = 0):
         declared: int = 0
         self.start_timer()
@@ -159,7 +163,8 @@ class MapScraper(object):
                 except BW_EXC.WebDriverException:
                     break
                 except TimeoutException:
-                    print(f"DEBUG : scraper timeout, func had [{time_out}.seconds]")
+                    logger.debug(f" scraper timeout, func had [{time_out}.seconds]")
+                    # print(f"DEBUG : scraper timeout, func had [{time_out}.seconds]")
                     break
                 finally:
                     if comment_bar:

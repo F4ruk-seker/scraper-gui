@@ -1,2 +1,2 @@
 from .func_metric import get_performance_metric
-
+from .func_metric import get_performance_metric_info_log

@@ -1,4 +1,7 @@
 from dataclasses import dataclass, fields
+from logger import get_logger
+
+logger = get_logger("Arrangement")
 
 
 @dataclass
@@ -22,6 +25,7 @@ class Arrangement:
 
     @staticmethod
     def get_arrangement_count() -> int:
-        print("DEBUG : (get_arrangement_count): Temporarily returned the no.4 manually. when fixed del static func.")
+        logger.debug("(get_arrangement_count): Temporarily returned the no.4 manually. when fixed del static func.")
+        # print("DEBUG : (get_arrangement_count): Temporarily returned the no.4 manually. when fixed del static func.")
         return 4
 

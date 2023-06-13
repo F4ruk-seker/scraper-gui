@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker,relationship
 import os
 
 
-engine = create_engine('sqlite:///scraper_comments.db', echo=True)
+engine = create_engine('sqlite:///scraper_comments.db', echo=config.DEBUG)
 
 metadata = MetaData()
 

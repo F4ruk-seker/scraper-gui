@@ -1,3 +1,5 @@
+from pathlib import Path
+
 class ApiHost:
     def __init__(self, host: str):
         self.__HOST: str = host
@@ -17,5 +19,7 @@ class ApiHost:
 
 
 API_HOST = ApiHost("http://127.0.0.1:8000/api")
-DEBUG = True
+DEBUG = False
+
+BASE_DIR = Path(__file__).resolve().parent
 
